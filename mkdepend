@@ -1,0 +1,28 @@
+#!/bin/bash
+
+rm -f .depend.mak
+
+for file in $(find www/ -name \*.css); do
+    #echo $file
+    file2=$(~/c/djb2 ${file:3}).css
+    echo data/$file2: $file >>.depend.mak
+    echo -e "\tcurl -X POST -s --data-urlencode 'input@${file}' https://www.toptal.com/developers/cssminifier/api/raw |gzip -9c > data/${file2}" >>.depend.mak
+done
+
+for file in $(find www/ -name \*.js); do
+    #echo $file
+    file2=$(~/c/djb2 ${file:3}).js
+    echo data/$file2: $file >>.depend.mak
+    #echo $file2
+    echo -e "\tcurl -X POST -s --data-urlencode 'input@${file}' https://www.toptal.com/developers/javascript-minifier/api/raw |gzip -9c > data/${file2}">>.depend.mak
+done
+
+for file in $(find www/ -name \*.html); do
+    #echo $file
+    file2=$(~/c/djb2 ${file:3}).html
+    echo data/$file2: $file >>.depend.mak
+    #echo $file2
+    echo -e "\tcurl -X POST -s --data-urlencode 'input@${file}' https://www.toptal.com/developers/html-minifier/api/raw |gzip -9c > data/${file2}">>.depend.mak
+done
+
+touch .depend.mak.done

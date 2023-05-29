@@ -1,0 +1,30 @@
+#!/bin/bash
+rm -r data/*
+
+for file in $(find www/ -name \*.css); do
+    echo $file
+    file2=$(~/c/djb2 ${file:3}).css
+    echo $file2
+    curl -X POST -s --data-urlencode "input@${file}" https://www.toptal.com/developers/cssminifier/api/raw |gzip -9c > data/${file2}
+done
+
+
+for file in $(find www/ -name \*.js); do
+    echo $file
+    file2=$(~/c/djb2 ${file:3}).js
+    echo $file2
+    curl -X POST -s --data-urlencode "input@${file}" https://www.toptal.com/developers/javascript-minifier/api/raw |gzip -9c > data/${file2}
+done
+
+for file in $(find www/ -name \*.html); do
+    echo $file
+    file2=$(~/c/djb2 ${file:3}).html
+    echo $file2
+    curl -X POST -s --data-urlencode "input@${file}" https://www.toptal.com/developers/html-minifier/api/raw |gzip -9c > data/${file2}
+done
+~/.platformio/penv/bin/pio run --target buildfs
+#python /home/tom/.platformio/packages/framework-arduinoespressif32/tools/espota.py -i 192.168.13.162 -I 192.168.13.13 -p <ESP_port> -P <HOST_port> [-a password] -s -f .pio/build/esp32dev/spiffs.bin
+
+#curl -X POST -s --data-urlencode 'input@www/blazer2.js' https://www.toptal.com/developers/javascript-minifier/api/raw
+#curl -X POST -s --data-urlencode 'input@www/demo01.html' https://www.toptal.com/developers/html-minifier/api/raw
+#curl -X POST -s --data-urlencode 'input@www/blazer.css' https://www.toptal.com/developers/cssminifier/api/raw

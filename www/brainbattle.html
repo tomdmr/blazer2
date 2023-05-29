@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+    <!-- Copyright (C) thd 2020
+         Eine Farbe sehen, eine andere Farbe lesen, je nach Gültigkeit die eine oder andere Aktion durchführen lassen.
+    -->
+    <head>
+        <meta charset="UTF-8">
+        <!-- Grundsätzlicher style: Farbiger Hintergrund, weiße Schrift. Größe proportional zum Viewport -->
+        <style>
+         body {
+             background-color: red;
+         }
+         h1 {
+             color: white;
+             text-align: center;
+             font-size: 15vw;
+         }
+         h2 {
+             color: white;
+             text-align: center;
+             font-size: 6vw;
+         }
+        </style>
+    </head>
+    <body onload="pageLoaded()">
+        <script>
+         var Running = false ;
+         var bgold   = -1;
+         function pageLoaded(){
+             const queryString = window.location.search;
+             const urlParams = new URLSearchParams(queryString);
+             //
+         }
+         function NewsFlash(){
+             se = Math.floor(Math.random()*2);
+             console.log("In NewsFlash "+se);
+             bg = Math.floor(Math.random()*4);
+             while (bg == bgold){
+                 bg = Math.floor(Math.random()*4);
+             }
+             bgold = bg;
+             fg = Math.floor(Math.random()*4);
+             while (bg == fg ){
+                 fg = Math.floor(Math.random()*4);
+             }
+             //
+             if( se==0 ){
+                 document.getElementById("entscheiden").innerHTML = "WORT";
+             }
+             else{
+                 document.getElementById("entscheiden").innerHTML = "FARBE";
+             }
+             switch(fg){
+                 case 0: document.getElementById("wort").innerHTML = "Rot";
+                     break;
+                 case 1: document.getElementById("wort").innerHTML = "Grün";
+                     break;
+                 case 2: document.getElementById("wort").innerHTML = "Blau";
+                     break;
+                 case 3: document.getElementById("wort").innerHTML = "Gelb";
+                     break;
+             }
+             switch(bg){
+                 case 0: document.body.style.backgroundColor = "red";
+                     break;
+                 case 1: document.body.style.backgroundColor = "green";
+                     break;
+                 case 2: document.body.style.backgroundColor = "blue";
+                     break;
+                 case 3: document.body.style.backgroundColor = "#e6e600";
+                     break;
+             }
+             
+             console.log("Out NewsFlash");
+         }
+         function looping(){
+             NewsFlash();
+             if (Running){
+                 var t = setTimeout(looping, 2000);
+             }
+         }
+        </script>
+        <!-- Tatsäclicher Inhalt: Nicht viel :-) -->
+        <center><h2 id="entscheiden" onclick="Running=!Running;looping()">WORT</h2></center>
+        <center><h1 id="wort">Grün</h1></center>
+    </body>
+</html>
