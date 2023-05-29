@@ -25,10 +25,10 @@ upload:
 upload_ota:
 	$(PIO) run --target=upload --upload-port=$(TARGETIP)
 
-uploadfs:
+uploadfs: all
 	$(PIO) run --target=uploadfs
 
-uploadfs_ota:
+uploadfs_ota: all
 	$(PIO) run --target=uploadfs --upload-port=$(TARGETIP)
 
 debug:
