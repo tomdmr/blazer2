@@ -41,6 +41,14 @@ Compilation is simply done with
 $ pio run
 ```
 
+The web-pages on the controller are saved on the SPIFFS-Filesystem,
+which is really simplisitc. The add some flexibility, all file paths
+under `www` are hashed into a 16-char string and saved in `data`. The
+webserver on the ESP performs the same hashing operation and serves
+the file with the hashed name. On the PC-side, the hashing is done
+with the `djb2` program in `tools`. I stole the program from DJB, so
+probably the function is pretty good. Adjust the location of the executable in `Makefile`.
+
 Installation must be done first time via USB:
 
 ``` shell
