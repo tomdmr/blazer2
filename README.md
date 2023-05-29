@@ -17,7 +17,7 @@ has this a a target.
 
 There will be a [wiki](wikiurl) for the full documentation of software and hardware. Bear with me...
 
-## Compile ##
+## Compile and Install##
 
 This is based on PlatformIO, so you need this framework. For
 compilation, you will need to add one file `credentials.h` in the
@@ -40,3 +40,11 @@ Compilation is simply done with
 $ pio run
 ```
 
+Installation must be done first time via USB:
+
+``` shell
+$ make all && makeuploadfs
+$ pio run --target=upload
+```
+
+The first command creates and uploads the file system, the second one the executable. 
