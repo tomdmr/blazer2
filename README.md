@@ -15,9 +15,10 @@ has this a a target.
 
 ## Documentation ##
 
-There will be a [wiki](wikiurl) for the full documentation of software and hardware. Bear with me...
+There will be a [wiki](https://github.com/tomdmr/blazer2/wiki) for the
+full documentation of software and hardware. Bear with me...
 
-## Compile and Install##
+## Compile and Install ##
 
 This is based on PlatformIO, so you need this framework. For
 compilation, you will need to add one file `credentials.h` in the
