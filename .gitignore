@@ -130,7 +130,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .pio
-data/
+data/*
 .depend.mak
 .depend.mak.done
 include/credentials.h
