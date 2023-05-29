@@ -13,12 +13,12 @@ HTM_HASH  = $(foreach name, $(HTM_SRC), data/$(shell $(HASH) /$(patsubst www/%,%
 ALL_WWW_HASH = $(CSS_HASH) $(JSC_HASH) $(HTM_HASH)
 
 
-all: .depend.mak.done $(ALL_WWW_HASH) 
+all: .depend.mak .depend.mak.done $(ALL_WWW_HASH) 
 
-.depend.mak.done:	$(ALL_WWW_SRC)
+.depend.mak:	$(ALL_WWW_SRC)
 	bash ./mkdepend
 
-include .depend.mak
+-include .depend.mak
 
 upload:
 	$(PIO) run --target=upload
