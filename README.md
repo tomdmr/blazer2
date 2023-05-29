@@ -43,8 +43,16 @@ $ pio run
 Installation must be done first time via USB:
 
 ``` shell
-$ make all && makeuploadfs
+$ make all && make uploadfs
 $ pio run --target=upload
 ```
 
 The first command creates and uploads the file system, the second one the executable. 
+
+Further installs or file system updates can be done over Wifi. The ESP must be in the net and awake:
+
+``` shell
+$ TARGETIP=x.x.x.x make upload_ota
+$ TARGETIP=x.x.x.x make upload_otafs
+```
+
