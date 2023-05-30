@@ -1,7 +1,8 @@
 PIO         = ~/.platformio/penv/bin/pio
-ESPOTA      = python /home/tom/.platformio/packages/framework-arduinoespressif32/tools/espota.py
+ESPOTA      = python ~/.platformio/packages/framework-arduinoespressif32/tools/espota.py
 MYIP        = 192.168.13.13
-HASH        = ~/c/djb2
+MKDEPEND    = ./tools/mkdepend
+HASH        = ./tools/djb2
 
 JSC_SRC     = $(wildcard www/*.js)
 CSS_SRC     = $(wildcard www/*.css)
@@ -16,7 +17,7 @@ ALL_WWW_HASH = $(CSS_HASH) $(JSC_HASH) $(HTM_HASH)
 all: .depend.mak .depend.mak.done $(ALL_WWW_HASH) 
 
 .depend.mak:	$(ALL_WWW_SRC)
-	bash ./mkdepend
+	bash $(MKDEPEND)
 
 -include .depend.mak
 
