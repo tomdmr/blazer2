@@ -1,5 +1,9 @@
 #include "config.h"
 
+// TODO: Clean-up
+#ifdef WITH_TOUCH
+extern int  touchSens;
+#endif
 
 void notifyClients() {
   char sString[256];
