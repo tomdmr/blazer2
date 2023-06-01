@@ -3,8 +3,6 @@
 
 // Always required
 Preferences preferences;
-bool touchDetected = false;
-int  touchSens      = 23;
 unsigned long msLastEvent;    // millis() of the last event
 unsigned long msLastTouch;    // millis() of the last touch
 
@@ -15,7 +13,6 @@ char  myName[32]    = "esp-default";
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-
 #endif
 
 #ifdef WITH_WIFI_AP
@@ -24,7 +21,8 @@ bool tryExt = false;
 unsigned long msAPActivity;   // millis() of last AP event
 #endif
 
-
+#ifdef WITH_TOUCH
+#endif
 
 bool ledState[3] = {0, 0, 0};
 

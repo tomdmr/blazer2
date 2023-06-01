@@ -58,11 +58,6 @@ int tryConnectWiFi(){
 /******************************************************************************/
 /******************************************************************************/
 void
-gotTouch(){
-  touchDetected = true;
-}
-/******************************************************************************/
-void
 goToSleep(){
   DEBUG_MSG("Going to sleep now\n");
   ws.textAll("CLOSE");
@@ -130,10 +125,10 @@ setup(void){
   Serial.begin(230400);
   while( !Serial ) { ; }
   Serial.println("Start setup");
+#ifdef WITH_TOUCH
   // Touch sensor
-  touchAttachInterrupt(T3, gotTouch, touchSens);
-  esp_sleep_enable_touchpad_wakeup();
-  Serial.println("Touch attach");
+  setupTouch();
+#endif
 #ifdef WITH_NEOPIXELBUS  
   // this resets all the neopixels to an off state
   strip.Begin();
