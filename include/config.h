@@ -10,6 +10,11 @@
  */
 #include "credentials.h"
 
+// Either this
+#define WITH_TOUCH
+// or that
+//#define WITH_BUTTON
+//
 // send debug messages to serial
 #define DEBUG_SERIAL
 // send debug messages to serial
@@ -86,12 +91,10 @@ void savePreferences();
 #  include <SPIFFS.h>
 #endif
 
-
-extern int  touchSens;
+#ifdef WITH_TOUCH
+#include "touch.h"
 extern unsigned long msLastEvent;    // millis() of the last event
-extern unsigned long msLastTouch;    // millis() of the last event
-
-
+#endif
 
 #ifdef DEBUG_SERIAL
 #define SERIAL_OUT(x) Serial.print(x)
