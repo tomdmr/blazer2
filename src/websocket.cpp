@@ -61,6 +61,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       ledState[0] = ledState[1] = ledState[2]=0;
       notifyClients();
     }
+#ifdef WITH_TOUCH
     else if(!strncmp(req, "GTT", 3)){
       char rsp[256];
       sprintf(rsp, "%d", touchSens);
@@ -76,6 +77,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       }
       msLastEvent = millis();      
     }
+#endif
   }
 }
 

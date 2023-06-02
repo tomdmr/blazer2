@@ -11,9 +11,9 @@
 #include "credentials.h"
 
 // Either this
-#define WITH_TOUCH
+//#define WITH_TOUCH
 // or that
-//#define WITH_BUTTON
+#define WITH_BUTTON
 //
 // send debug messages to serial
 #define DEBUG_SERIAL
@@ -92,9 +92,15 @@ void savePreferences();
 #endif
 
 #ifdef WITH_TOUCH
-#include "touch.h"
-extern unsigned long msLastEvent;    // millis() of the last event
+extern int  touchSens;
+extern unsigned long msLastTouch;    // millis() of the last event
+void gotTouch();
+void setupTouch();
+
 #endif
+#if defined(WITH_TOUCH) || defined(WITH_BUTTON)
+#endif
+extern unsigned long msLastEvent;    // millis() of the last event
 
 #ifdef DEBUG_SERIAL
 #define SERIAL_OUT(x) Serial.print(x)

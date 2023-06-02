@@ -16,6 +16,30 @@
 #include "mywifi.h"
 #include "http_handler.h"
 
+static bool touchDetected = false;
+
+#ifdef WITH_TOUCH
+int  touchSens     = 23;
+void
+gotTouch(){
+  touchDetected = true;
+}
+
+#endif
+
+#ifdef WITH_BUTTON
+long lastMillis = 0;
+
+void IRAM_ATTR
+gotButton(){
+  if(millis() - lastMillis >10){
+    ets_printf("Trigger!\n");
+    touchDetected = true;
+  }
+  lastMillis = millis();
+}
+#endif
+
 
 int tryConnectWiFi(){
   DEBUG_MSG("WiFi: AP with %s, WiFi to %s\n", myName, extSSID);
@@ -68,7 +92,7 @@ goToSleep(){
     {
       yield();
     }
-#endif  
+#endif
   server.end();
   esp_deep_sleep_start();
 }
@@ -96,10 +120,15 @@ loadPreferences(){
   preferences.getString("hname", myName,   sizeof(myName) );
   preferences.getString("ssid",  extSSID,   sizeof(extSSID));
   preferences.getString("pswd",  extPasswd, sizeof(extPasswd));
+#ifdef WITH_TOUCH
   touchSens = preferences.getInt   ("tsns", 23);
-  preferences.end();
   DEBUG_MSG("Load preferences: myName: <%s>, connect to %s/%s, touch: %d\n",
             myName, extSSID, extPasswd, touchSens);
+#else
+  DEBUG_MSG("Load preferences: myName: <%s>, connect to %s/%s\n",
+            myName, extSSID, extPasswd);
+#endif
+  preferences.end();
 }
 /******************************************************************************/
 void
@@ -108,10 +137,15 @@ savePreferences(){
   preferences.putString("hname",  myName);
   preferences.putString("ssid", extSSID);
   preferences.putString("pswd", extPasswd);
+#ifdef WITH_TOUCH
   preferences.putInt   ("tsns", touchSens);
-  preferences.end();
   DEBUG_MSG("Save preferences: myName: <%s>, connect to %s/%s, touch: %d\n",
             myName, extSSID, extPasswd, touchSens);
+#else
+  DEBUG_MSG("Save preferences: myName: <%s>, connect to %s/%s\n",
+            myName, extSSID, extPasswd);
+#endif
+  preferences.end();
 }
 /******************************************************************************/
 /******************************************************************************/
@@ -127,7 +161,18 @@ setup(void){
   Serial.println("Start setup");
 #ifdef WITH_TOUCH
   // Touch sensor
-  setupTouch();
+  touchAttachInterrupt(T3, gotTouch, touchSens);
+  esp_sleep_enable_touchpad_wakeup();
+  Serial.println("Touch attach");
+#endif
+
+#ifdef WITH_BUTTON
+  pinMode(GPIO_NUM_33, INPUT_PULLUP);
+  // enable wakeup
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_33,0); //1 = High, 0 = Low
+  // enable Interrupt
+  attachInterrupt(GPIO_NUM_33, gotButton, FALLING );
+  Serial.println("Button attach");
 #endif
 #ifdef WITH_NEOPIXELBUS  
   // this resets all the neopixels to an off state
@@ -208,7 +253,7 @@ loop(void){
   if(touchDetected){
     touchDetected = false;
     DEBUG_MSG("Raw Touch\n");
-    if(1 ||( millis() > msLastTouch + 50)){
+    if(( millis() > msLastTouch + 50)){
       char sString[255];
       sprintf(sString, "TOUCH%d%d%d %lu %d", ledState[0], ledState[1], ledState[2], millis(), touchRead(T3));
       ws.textAll(sString);
