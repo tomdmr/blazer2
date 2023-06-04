@@ -1,5 +1,4 @@
 #include "config.h"
-#include "Arduino.h"
 
 #ifdef WITH_SPIFFS
 // Hash function from djb.
