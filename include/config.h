@@ -1,6 +1,6 @@
 #ifndef _config_h
 #define _config_h
-#include "Arduino.h"
+#include <Arduino.h>
 /**
  * credentials.h defines 4 macros:
  * #define HOMESSID    "myHomeWlan"
