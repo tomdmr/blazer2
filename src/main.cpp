@@ -203,7 +203,7 @@ setup(void){
   strip.Show();
   Serial.println("Neopixels");
   delay(DELAYVAL);
-#endif  
+#endif
 
 #ifdef WITH_TOUCH
   // Touch sensor
@@ -231,27 +231,27 @@ setup(void){
   strip.RotateLeft(1);
   strip.Show();
   delay(DELAYVAL);
-#endif                 
+#endif
   // File sytem
 #ifdef WITH_SPIFFS
   SPIFFS.begin(true);
-#endif  
+#endif
 #ifdef WITH_NEOPIXELBUS
   strip.RotateLeft(1);
   strip.Show();
   delay(DELAYVAL);
-#endif                 
+#endif
   // WiFi
   tryConnectWiFi();
 #ifdef WITH_NEOPIXELBUS
   strip.RotateLeft(1);
   strip.Show();
   delay(DELAYVAL);
-#endif                 
+#endif
 #ifdef DEBUG_UDP  
   udpOK = true;
   DEBUG_MSG("Turn on UDP\n");
-#endif  
+#endif
 
   
   // Websockets
@@ -260,20 +260,20 @@ setup(void){
   strip.RotateLeft(1);
   strip.Show();
   delay(DELAYVAL);
-#endif                 
+#endif
   // Web sserver
   server.onNotFound(onRequest);
   server.on("/scan", HTTP_ANY, onScan);
 #if 0
   server.on("/devhome", HTTP_ANY, onDevHome);
   server.on("/devhall", HTTP_ANY, onDevHall);
-#endif  
+#endif
   server.on("/config", HTTP_ANY, onConfig);
   server.begin();
 #ifdef WITH_NEOPIXELBUS
   strip.RotateLeft(1);
   strip.Show();
-#endif                 
+#endif
 
 #ifdef WITH_OTA
   ArduinoOTA
@@ -321,19 +321,15 @@ setup(void){
   msLastTouch = msLastEvent = millis();
   Serial.println("Done init");
 }
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
 
 /* ************************************************************************** */
+/* ** L o o p   A c t i v i t i e s ***************************************** */
 /* ************************************************************************** */
-/* ************************************************************************** */
-
 void
 loop(void){
   // Always
   ws.cleanupClients();
-  // TODO: Often
+  // TODO: Often, change to, like, every 1000ms.
   if (wifiMulti.run( 1000 ) == WL_CONNECTED) {
     /*
     Serial.print("WiFi connected: ");
@@ -347,15 +343,6 @@ loop(void){
   ArduinoOTA.handle();
 #endif
 
-#if 0
-  // if /scan got submitted
-  if( tryExt ){
-    DEBUG_MSG("New test on extrnal WiFi\n");
-    tryExt = false;
-    tryConnectWiFi();
-  }
-#endif
-
   if(touchDetected){
     touchDetected = false;
     if(( millis() > msLastTouch + 50)){
@@ -366,24 +353,9 @@ loop(void){
     }
     msLastTouch = msLastEvent = millis();
   }
-
-#if 0
-  if( isAP && (millis()  > msAPActivity + AP_GRACEPERIOD)){
-    Serial.println("Shutting down AP");
-    isAP = false;
-    WiFi.enableAP(false);
-    msLastEvent = millis();
-  }
-
-  if( !isAP && (millis() > msLastEvent + IDLE_TO_SLEEP)){
-    DEBUG_MSG("Loop: going to sleep, millis=%ld, msLastEvent=%ld\n", millis(), msLastEvent);
-    goToSleep();
-  }
-#endif
   if( millis() > msLastEvent + IDLE_TO_SLEEP ){
     DEBUG_MSG("Loop: going to sleep, millis=%ld, msLastEvent=%ld\n", millis(), msLastEvent);
     goToSleep();
   }
-  
 }
 
