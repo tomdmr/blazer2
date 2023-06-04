@@ -134,3 +134,4 @@ data/*
 .depend.mak
 .depend.mak.done
 include/credentials.h
+tools/djb2
