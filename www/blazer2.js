@@ -190,6 +190,21 @@ function launch(url){
     //console.log(url+param);
     window.open(url+param, "_top");
 }
+function portalLoaded(){
+         const queryString = window.location.search;
+         const urlParams = new URLSearchParams(queryString);
+         console.log(queryString);
+         console.log(urlParams);
+         table = document.getElementById('BlazerTable');
+         let i = 0;
+         urlParams.forEach(function(item){
+             let row = table.insertRow(-1);
+             let cell = row.insertCell(0);
+             cell.innerHTML="<input type='checkbox' checked='true'/>";
+             cell = row.insertCell(-1);
+             cell.innerHTML= "<input type='text' value='"+item+"'/>";
+         })
+}
 /*
 function ping(host, port, pong, id) {
     var started = new Date().getTime();

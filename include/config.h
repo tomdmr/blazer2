@@ -1,6 +1,6 @@
 #ifndef _config_h
 #define _config_h
-#include "Arduino.h"
+#include <Arduino.h>
 /**
  * credentials.h defines 4 macros:
  * #define HOMESSID    "myHomeWlan"
@@ -24,9 +24,7 @@
 //#define   WITH_WATCHDOG
 // Enable WiFi Client
 #define   WITH_WIFI_CLIENT
-// Enable to act as access point
-#define   WITH_WIFI_AP
-// Run mini-DNS on AP
+// Run MDNS to advertise services
 #define   WITH_MDNS
 // Enable OTA Updates
 #define   WITH_OTA
@@ -38,8 +36,6 @@
 #define WIFI_RETRY         60L
 // Go to sleep after 5 Minutes
 #define IDLE_TO_SLEEP      (300  * 1000L)
-// If no WiFi: Shutdown AP after 10 Minutes, then sleep
-#define AP_GRACEPERIOD     (600  * 1000L)
 
 
 /******************************************************************************/
@@ -55,23 +51,21 @@ void savePreferences();
 #if defined(WITH_WIFI_CLIENT) || defined(WITH_WIFI_AP)
   // Import required libraries
 #  include <WiFi.h>
+#  include <WiFiMulti.h>
 #  include <AsyncTCP.h>
 #  include <ESPAsyncWebServer.h>
-#  include <DNSServer.h>
    extern AsyncWebServer server;
    extern AsyncWebSocket ws;
    extern char extSSID[32];
    extern char extPasswd[32];
    extern char myName[32];
-   extern unsigned long msAPActivity;
-   extern bool isAP;
-   extern bool tryExt;
 #endif
 
 #ifdef WITH_UDP
-#include <WiFi.h>
-#include <WiFiUdp.h>
-#include "udpdbg.h"
+#  include <WiFi.h>
+#  include <WiFiMulti.h>
+#  include <WiFiUdp.h>
+#  include "udpdbg.h"
 #endif
 
 #ifdef WITH_NEOPIXELBUS
