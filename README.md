@@ -20,6 +20,7 @@ full documentation of software and hardware. Bear with me...
 
 ## Compile and Install ##
 
+**This is outdated!**
 This is based on PlatformIO, so you need this framework. For
 compilation, you will need to add one file `credentials.h` in the
 `include` directory. This file should look like this:
@@ -33,7 +34,20 @@ compilation, you will need to add one file `credentials.h` in the
 #define HALLESSID     "ssid_in_gym"
 #define HALLEPASSWD   "password_in_gym"
 #endif
+``` 
+
+**New procedure**
+
+As of v0.9.9-rc1 the WiFi-credentials are stored in a file in the
+SPIFFS-filesystem. To update from an older version, you need to first
+create the file `APConfig.txt' in the `data`-directory. This file
+contains per network two lines, first the SSID and then the password. After creating this file, you need to
+
+``` shell
+$ make uploadfs_ota
 ```
+
+first, before updating the code. This makes sure that the file is accessible at next boot.
 
 Compilation is simply done with
 
@@ -61,7 +75,8 @@ The first command creates and uploads the file system, the second one the execut
 Further installs or file system updates can be done over Wifi. The ESP must be in the net and awake:
 
 ``` shell
+$ TARGETIP=x.x.x.x make uploadfs_ota
 $ TARGETIP=x.x.x.x make upload_ota
-$ TARGETIP=x.x.x.x make upload_otafs
+
 ```
 
