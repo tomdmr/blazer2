@@ -102,23 +102,31 @@ void onConfig(AsyncWebServerRequest *request){
     savePreferences();
   }
 }
+#define TEMPL "<tr><td><input type='checkbox' name='blazers' checked='true'/></td><td><input value='%s'/></td><td>%s</td></tr>"
 void onScan(AsyncWebServerRequest *request) {
   // TODO: convert this to a submittable form
   DEBUG_MSG("onScan Request\n");
   int nrOfServices = MDNS.queryService("debug", "udp");
+  char buf[256];
+
   String rsp  = "<!DOCTYPE HTML><html lang='de'><head><title>Config Page</title>"
     "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+    "<link href='blazer.css' rel='stylesheet'>"
     "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>"
     "<script src='blazer2.js'></script>"
     "</head>"
-    "<body><h1>ESP WLAN Peers</h1>"
-    "<table>"
-    "<tr><td>"+ String(myName) + "</td><td>"+ String(WiFi.localIP().toString()) + "</td></tr>";
+    "<body><h1>ESP WLAN Peers</h1><center>"
+    "<table id='BlazerTable'>";
+  snprintf(buf, 256, TEMPL, WiFi.localIP().toString().c_str(), myName);
+  rsp += buf;
+  //    "<tr><td>"+ String(myName) + "</td><td>"+ String(WiFi.localIP().toString()) + "</td></tr>";
   for (int i = 0; i < nrOfServices; i=i+1) {
-    rsp += "<tr><td>"+ MDNS.hostname(i) +"</td><td>" +MDNS.IP(i).toString() + "</td></tr>";
+    snprintf(buf, 256, TEMPL, MDNS.IP(i).toString().c_str(), MDNS.hostname(i));
+    rsp += buf;
+    //rsp += "<tr><td>"+ MDNS.hostname(i) +"</td><td>" +MDNS.IP(i).toString() + "</td></tr>";
   }
   rsp +=
-    "</table></body></html>";
+    "</table><input type='submit' value='Submit' onclick='launch(\"portal.html\")'></center></body></html>";
   request->send(200, "text/html", rsp);
 
 #if 0
