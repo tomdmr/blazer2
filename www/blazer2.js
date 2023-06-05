@@ -190,6 +190,24 @@ function launch(url){
     //console.log(url+param);
     window.open(url+param, "_top");
 }
+function launch2(url){
+    //console.log(url);
+    let table = document.getElementById("BlazerTable");
+    let param="";
+    let es = 0;
+    for (let i = 0, row; row = table.rows[i]; i++) {
+        let n = row.cells[2].firstChild.value;
+        let cb = row.cells[0].getElementsByTagName('input')[0];
+        if(cb.checked){
+            if( param === "") param += '?';
+            else      param += '&';
+            param += es+'='+ n;
+            es++;
+        }
+    }
+    //console.log(url+param);
+    window.open(url+param, "_top");
+}
 function portalLoaded(){
          const queryString = window.location.search;
          const urlParams = new URLSearchParams(queryString);
