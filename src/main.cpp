@@ -76,7 +76,13 @@ tryConnectWiFi(){
     Serial.printf("SSID: %s, PASWD: %s\n", s, p);
     wifiMulti.addAP(s, p);
   }
-
+  // Fallback, if file is missing
+  wifiMulti.addAP(HOMESSID, HOMEPASSWD);
+  //
+#ifdef WITH_NEOPIXELBUS
+  strip.RotateLeft(1);
+  strip.Show();
+#endif
   Serial.println("Connecting Wifi...");
   if(wifiMulti.run() == WL_CONNECTED) {
     Serial.println("");
@@ -330,14 +336,15 @@ loop(void){
   // Always
   ws.cleanupClients();
   // TODO: Often, change to, like, every 1000ms.
-  if (wifiMulti.run( 1000 ) == WL_CONNECTED) {
-    /*
-    Serial.print("WiFi connected: ");
-    Serial.print(WiFi.SSID());
-    Serial.print(" ");
-    Serial.println(WiFi.RSSI());
-    Serial.println(WiFi.localIP());
-    */
+  if( WiFi.status() != WL_CONNECTED){
+    //Serial.println("WiFi: No connection");
+    if (wifiMulti.run( 1000 ) == WL_CONNECTED) {
+      Serial.print("WiFi connected: ");
+      Serial.print(WiFi.SSID());
+      Serial.print(" ");
+      Serial.println(WiFi.RSSI());
+      Serial.println(WiFi.localIP());
+    }
   }
 #ifdef WITH_OTA
   ArduinoOTA.handle();
