@@ -2,11 +2,9 @@
 #define _config_h
 #include <Arduino.h>
 /**
- * credentials.h defines 4 macros:
+ * credentials.h defines 2 macros:
  * #define HOMESSID    "myHomeWlan"
  * #define HOMEPASSWD  "password_for_home"
- * #define HALLESSID   "myAwayWlan"
- * #define HALLEPASSWD "password_for_away_lan"
  */
 #include "credentials.h"
 
@@ -17,11 +15,9 @@
 //
 // send debug messages to serial
 #define DEBUG_SERIAL
-// send debug messages to serial
+// send debug messages to UDP
 #define DEBUG_UDP
 #define WITH_NEOPIXELBUS
-// No watchdog
-//#define   WITH_WATCHDOG
 // Enable WiFi Client
 #define   WITH_WIFI_CLIENT
 // Run MDNS to advertise services
@@ -32,8 +28,6 @@
 #define   WITH_SPIFFS
 // Space for config settings
 #define STORAGE_SPACE     "blazer"
-/* 60 seconds trying */
-#define WIFI_RETRY         60L
 // Go to sleep after 5 Minutes
 #define IDLE_TO_SLEEP      (300  * 1000L)
 

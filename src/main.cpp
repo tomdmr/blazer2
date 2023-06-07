@@ -23,7 +23,6 @@ void
 gotTouch(){
   touchDetected = true;
 }
-
 #endif
 
 #ifdef WITH_BUTTON
@@ -31,7 +30,7 @@ static long lastMillis = 0;
 void IRAM_ATTR
 gotButton(){
   if(millis() - lastMillis >10){
-    ets_printf("Trigger!\n");
+    //ets_printf("Trigger!\n");
     touchDetected = true;
   }
   lastMillis = millis();
@@ -77,6 +76,8 @@ tryConnectWiFi(){
     wifiMulti.addAP(s, p);
   }
   // Fallback, if file is missing
+  // Bad_ WiFiMulti does not check if a pair is entered
+  // more than once...
   wifiMulti.addAP(HOMESSID, HOMEPASSWD);
   //
 #ifdef WITH_NEOPIXELBUS
@@ -84,13 +85,7 @@ tryConnectWiFi(){
   strip.Show();
 #endif
   Serial.println("Connecting Wifi...");
-  if(wifiMulti.run() == WL_CONNECTED) {
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-  }
-  else{
+  if(wifiMulti.run() != WL_CONNECTED) {
 #ifdef WITH_NEOPIXELBUS
     for(int i=0; i<5; i++){
       strip.ClearTo(RgbColor(25,0,10));
@@ -103,7 +98,7 @@ tryConnectWiFi(){
 #endif
     return 1;
   }
-# ifdef WITH_MDNS
+#ifdef WITH_MDNS
     if(!MDNS.begin(myName)) {
       Serial.println("Error starting mDNS");
     }
@@ -115,7 +110,7 @@ tryConnectWiFi(){
 /* ************************************************************************** */
 /* ** S l e e p   a n d   W a k e   U p ************************************* */
 /* ************************************************************************** */
-void
+ void
 goToSleep(){
   DEBUG_MSG("Going to sleep now\n");
   ws.textAll("CLOSE");
@@ -138,6 +133,8 @@ goToSleep(){
   server.end();
   esp_deep_sleep_start();
 }
+#if 0
+/* interesting for debugging, but not needed here. */
 void
 print_wakeup_reason(){
   esp_sleep_wakeup_cause_t wakeup_reason;
@@ -152,6 +149,7 @@ print_wakeup_reason(){
     default : Serial.printf("Wakeup was not caused by deep sleep: %d\n",wakeup_reason); break;
   }
 }
+#endif
 /******************************************************************************/
 /** P r e f e r e n c e   H a n d l i n g *************************************/
 /******************************************************************************/
@@ -207,7 +205,7 @@ setup(void){
   //strip.Show();
   strip.SetPixelColor(1, RgbColor(0,25,0));
   strip.Show();
-  Serial.println("Neopixels");
+  DEBUG_MSG("Neopixels\n");
   delay(DELAYVAL);
 #endif
 
@@ -215,7 +213,7 @@ setup(void){
   // Touch sensor
   touchAttachInterrupt(T3, gotTouch, touchSens);
   esp_sleep_enable_touchpad_wakeup();
-  Serial.println("Touch attach");
+  DEBUG_MSG("Touch attach\n");
 #endif
 
 #ifdef WITH_BUTTON
@@ -224,7 +222,6 @@ setup(void){
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_33,0); //1 = High, 0 = Low
   // enable Interrupt
   attachInterrupt(GPIO_NUM_33, gotButton, FALLING );
-  Serial.println("Button attach");
 #ifdef WITH_NEOPIXELBUS
   strip.RotateLeft(1);
   strip.Show();
@@ -258,6 +255,8 @@ setup(void){
   udpOK = true;
   DEBUG_MSG("Turn on UDP\n");
 #endif
+  DEBUG_MSG("Build date: %s/%s, ", __DATE__, __TIME__);
+  DEBUG_MSG("WiFi OK, MyIp=%s\n", WiFi.localIP().toString().c_str());
 
   
   // Websockets
@@ -295,21 +294,21 @@ setup(void){
         SPIFFS.end();
 #endif
       }
-      Serial.println("Start updating " + type);
+      DEBUG_MSG("Start updating %s\n", type.c_str());
       })
     .onEnd([]() {
-      Serial.println("\nEnd");
+      DEBUG_MSG("\nEnd\n");
     })
     .onProgress([](unsigned int progress, unsigned int total) {
-      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+                  DEBUG_MSG("Progress: %u%%\r", (progress / (total / 100)));
     })
     .onError([](ota_error_t error) {
-      Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+      DEBUG_MSG("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) DEBUG_MSG("Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) DEBUG_MSG("Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) DEBUG_MSG("Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) DEBUG_MSG("Receive Failed");
+      else if (error == OTA_END_ERROR) DEBUG_MSG("End Failed");
     });
   ArduinoOTA.setHostname(myName);
   ArduinoOTA.begin();
