@@ -20,34 +20,38 @@ full documentation of software and hardware. Bear with me...
 
 ## Compile and Install ##
 
-**This is outdated!**
-This is based on PlatformIO, so you need this framework. For
-compilation, you will need to add one file `credentials.h` in the
-`include` directory. This file should look like this:
+The build system is based on
+[PlatformIO](https://www.platformio.org/), with a bit of GNU-make.
+Personally, I get along perfectly with the CLI-Version. 
+
+The directory structure is:
+
+  * `include`: CPP-Headers
+  * `src`: Sources
+  * `www`: html, js and css files that will be uploaded to the ESP32
+  * `tools`: source of a little hashing tool for filenames and a helper for `make`
+  * `data` : Initially empty, receives the files that are finally uploaded.
+
+### Before you start ###
+
+Create the file `include/credentials.h`, like this:
 
 ``` c++
 #ifndef _credentials_h
 #define _credentials_h
 #define HOMESSID     "my_ssid"
 #define HOMEPASSWD   "homepassword"
-
-#define HALLESSID     "ssid_in_gym"
-#define HALLEPASSWD   "password_in_gym"
 #endif
 ``` 
+This will allow your device to connect to your home/development WiFi.
 
-**New procedure**
+Additionally, as of v0.9.9-rc1 WiFi-credentials are stored in a file
+in the SPIFFS-filesystem. The file `APConfig.txt` contains
+**additional** networks the device can connect to. The format is a
+pair of lines per network, first the SSID and then the password.
 
-As of v0.9.9-rc1 the WiFi-credentials are stored in a file in the
-SPIFFS-filesystem. To update from an older version, you need to first
-create the file `APConfig.txt' in the `data`-directory. This file
-contains per network two lines, first the SSID and then the password. After creating this file, you need to
-
-``` shell
-$ make uploadfs_ota
-```
-
-first, before updating the code. This makes sure that the file is accessible at next boot.
+Check the file `include/config.h` and select if your hardware has a
+button on top, or if you want to have a touch-sensitive area on top.
 
 Compilation is simply done with
 
@@ -80,3 +84,12 @@ $ TARGETIP=x.x.x.x make upload_ota
 
 ```
 
+Congratulations, almost done. By default, every chip believes that its
+name is `esp-default`. If you have several of them, your local
+dns-resolver may run into trouble. to fix this, start the device and point your browser to this URL:
+
+`http://device_ip/config?lan=xxx&pw=xxx&name=NEWNAME`
+
+The triple-x don't mean anything, NEWNAME is the new device name. Yes,
+this is a hack. All my ESPs have a unique name, and I completely
+forgot about this detail...
