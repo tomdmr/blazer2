@@ -1,6 +1,8 @@
 #include "config.h"
 
 #ifdef WITH_SPIFFS
+// TODO: check
+// https://gist.github.com/amakukha/7854a3e910cb5866b53bf4b2af1af968
 // Hash function from djb.
 static unsigned long long
 hash(const char* str){
@@ -15,21 +17,25 @@ hash(const char* str){
 #endif
 void onRequest(AsyncWebServerRequest *request) {
   const char *url = request->url().c_str();
+  msLastEvent = millis();
 #ifdef WITH_SPIFFS
   if(!strcmp(url, "/"))
     url="/portal.html";
   //Serial.printf("request for %s\n", url);
 
   //unsigned long long hs = hash( url );
+  // We need to grab the extension before hashing, because otherwise
+  // the MIME-type cannot be set.
   char *ext = strrchr(url,'.');
   if( !ext ){
+    // No extension, no service...
     request->send(404,"text/html", "Not found: " + request->url());
     return;
   }
   char buf[256];
+  // Construct name of file in SPIFFS.
   //sprintf(buf, "Request for %s, hash is %016llx%s\n", url, hs, ext);
-  sprintf(buf, "/%016llx%s", hash(url), ext);
-  Serial.println(buf);
+  snprintf(buf, sizeof(buf), "/%016llx%s", hash(url), ext);
   if(SPIFFS.exists(buf)){
     AsyncWebServerResponse *response;
     if(!strcmp(ext, ".html")){
@@ -89,6 +95,7 @@ void onRequest(AsyncWebServerRequest *request) {
 
 
 void onConfig(AsyncWebServerRequest *request){
+  msLastEvent = millis();
   DEBUG_MSG("onConfig request\n");
   if(request->hasParam("name")
     && request->hasParam("lan")
@@ -105,7 +112,7 @@ void onConfig(AsyncWebServerRequest *request){
 #define TEMPL "<tr><td><input type='checkbox' name='blazers' checked='true'/>"\
   "</td><td><input value='%s'/></td><td><input value='%s'/></td></tr>"
 void onScan(AsyncWebServerRequest *request) {
-
+  msLastEvent = millis();
   DEBUG_MSG("onScan Request\n");
   int nrOfServices = MDNS.queryService("debug", "udp");
   char buf[256];
