@@ -93,3 +93,10 @@ dns-resolver may run into trouble. to fix this, start the device and point your 
 The triple-x don't mean anything, NEWNAME is the new device name. Yes,
 this is a hack. All my ESPs have a unique name, and I completely
 forgot about this detail...
+
+You can also use `curl`:
+
+``` shell
+$curl 'http://192.168.13.162/config?name=NEWNAME&lan=foo&pw=bar'
+```
+
