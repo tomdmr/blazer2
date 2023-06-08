@@ -56,6 +56,13 @@ fgets(char *str, int n, File f){
 /* *************************************************************************  */
 /* *** W i F i   C o n n e c t i o n   H a n d l i n g *********************  */
 /* *************************************************************************  */
+/**
+ *  - Reset WiFi to a clean state
+ *  - Get Network info from /APConfig.txt
+ *  - Add fallback network
+ *  - Try to connect via WiFiMulti
+ *  - Start MDNS
+ */
 static WiFiMulti wifiMulti;
 int
 tryConnectWiFi(){
@@ -75,6 +82,7 @@ tryConnectWiFi(){
     Serial.printf("SSID: %s, PASWD: %s\n", s, p);
     wifiMulti.addAP(s, p);
   }
+  if(f) f.close();
   // Fallback, if file is missing
   // Bad_ WiFiMulti does not check if a pair is entered
   // more than once...
@@ -114,6 +122,7 @@ tryConnectWiFi(){
 goToSleep(){
   DEBUG_MSG("Going to sleep now\n");
   ws.textAll("CLOSE");
+  savePreferences();
 #ifdef WITH_NEOPIXELBUS
     for(int i=0; i<5; i++){
       strip.ClearTo(RgbColor(0,0,35));
@@ -330,8 +339,16 @@ setup(void){
 /* ************************************************************************** */
 /* ** L o o p   A c t i v i t i e s ***************************************** */
 /* ************************************************************************** */
+//static int loopCtr=100000;
 void
 loop(void){
+  /*
+  if(loopCtr == 100000){
+    Serial.println(millis());
+    loopCtr=0;
+  }
+  ++loopCtr;
+  */
   // Always
   ws.cleanupClients();
   // TODO: Often, change to, like, every 1000ms.
@@ -355,12 +372,12 @@ loop(void){
       char sString[255];
       sprintf(sString, "TOUCH%d%d%d %lu %d", ledState[0], ledState[1], ledState[2], millis(), touchRead(T3));
       ws.textAll(sString);
-      DEBUG_MSG("TOUCH: %d %lu\n", touchRead(T3), millis());
+      //DEBUG_MSG("TOUCH: %d %lu\n", touchRead(T3), millis());
     }
     msLastTouch = msLastEvent = millis();
   }
   if( millis() > msLastEvent + IDLE_TO_SLEEP ){
-    DEBUG_MSG("Loop: going to sleep, millis=%ld, msLastEvent=%ld\n", millis(), msLastEvent);
+    //DEBUG_MSG("Loop: going to sleep, millis=%ld, msLastEvent=%ld\n", millis(), msLastEvent);
     goToSleep();
   }
 }
