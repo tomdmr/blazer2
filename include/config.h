@@ -28,8 +28,8 @@
 #define   WITH_SPIFFS
 // Space for config settings
 #define STORAGE_SPACE     "blazer"
-// Go to sleep after 5 Minutes
-#define IDLE_TO_SLEEP      (300  * 1000L)
+// Go to sleep after 10 Minutes
+#define IDLE_TO_SLEEP      (600  * 1000L)
 
 
 /******************************************************************************/
