@@ -73,7 +73,7 @@ tryConnectWiFi(){
 
   WiFi.mode(WIFI_STA);
   File f = SPIFFS.open("/APConfig.txt", FILE_READ);
-  // FIXME: Handle failure
+
   while(f && f.available()){
     char ssid[256];
     char pass[256];
@@ -118,7 +118,7 @@ tryConnectWiFi(){
 /* ************************************************************************** */
 /* ** S l e e p   a n d   W a k e   U p ************************************* */
 /* ************************************************************************** */
- void
+void
 goToSleep(){
   DEBUG_MSG("Going to sleep now\n");
   ws.textAll("CLOSE");
@@ -265,7 +265,7 @@ setup(void){
   DEBUG_MSG("Turn on UDP\n");
 #endif
   DEBUG_MSG("Build date: %s/%s, ", __DATE__, __TIME__);
-  DEBUG_MSG("WiFi OK, MyIp=%s\n", WiFi.localIP().toString().c_str());
+  DEBUG_MSG("WiFi OK, MyIp=%s/%s\n", WiFi.localIP().toString().c_str(), myName);
 
   
   // Websockets
