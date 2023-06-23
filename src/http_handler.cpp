@@ -112,6 +112,23 @@ void onConfig(AsyncWebServerRequest *request){
     // save preferences
     savePreferences();
   }
+#ifdef WITH_SPIFFS
+  else if(request->hasParam("clearNetworks")){
+    DEBUG_MSG("Request to clear /APConfig.txt\n");
+    SPIFFS.remove("/APConfig.txt");
+    request->send(200, "text/html", "OK, file deleted" );
+  }
+  else if(request->hasParam("addNetwork")
+          && request->hasParam("ssid")
+          && request->hasParam("pw")){
+    DEBUG_MSG("Append <%s> and <%s>\n", request->getParam("ssid")->value().c_str(), request->getParam("pw")->value().c_str());
+    File cfgFile = SPIFFS.open("/APConfig.txt", FILE_APPEND);
+    cfgFile.println(request->getParam("ssid")->value());
+    cfgFile.println(request->getParam("pw")->value());
+    cfgFile.close();
+    request->send(200, "text/html", "OK, appended" );
+  }
+#endif
 }
 /**
  *
